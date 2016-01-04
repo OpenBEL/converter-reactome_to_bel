@@ -1,0 +1,23 @@
+
+== BEL Check
+~/bin/belcheck reactome_belscript.bel
+
+== Zip
+mv bad_evidences.json reactome_belscript.bel belcheck_warnings.txt reactome_bel
+zip -r reactome_bel.zip reactome_bel
+
+== Delivered to Alexion project
+Results were renamed to twopathways.bels[2]
+----
+./processReactome.py -s "Homo sapiens" -p Metabolism -p "Transmembrane transport of small molecules" -b 1
+
+./processReactome.py -s "Homo sapiens" -p Metabolism -p "Transmembrane transport of small molecules" -b 2
+----
+
+Results were renamed to twopathways-20151023.bels[2]
+----
+./processReactome.py -s "Homo sapiens" -p Metabolism -p "Transmembrane transport of small molecules" -b 1
+
+./processReactome.py -s "Homo sapiens" -p Metabolism -p "Transmembrane transport of small molecules" -b 2
+----
+

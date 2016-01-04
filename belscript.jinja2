@@ -1,0 +1,77 @@
+##################################################
+# Document Properties Section
+SET DOCUMENT Name = "{{BEL_DOCUMENT_NAME}}"
+SET DOCUMENT Description = "{{BEL_DOCUMENT_DESCRIPTION}}"
+SET DOCUMENT Licenses = "Creative Commons Atribution-Share Alike 3.0 Unported License"
+SET DOCUMENT Authors = "{{AUTHORS}}"
+SET DOCUMENT Copyright = "Copyright (c) {{DATE}}, {{AUTHORS}}. All Rights Reserved."
+SET DOCUMENT Version = "{{VERSION}}"
+SET DOCUMENT ContactInfo = "{{CONTACT_EMAIL}}"
+##################################################
+# Definitions Section
+DEFINE NAMESPACE AFFX AS URL "http://resource.belframework.org/belframework/20150611/namespace/affy-probeset-ids.belns"
+DEFINE NAMESPACE CHEBIID AS URL "http://resource.belframework.org/belframework/20150611/namespace/chebi-ids.belns"
+DEFINE NAMESPACE CHEBI AS URL "http://resource.belframework.org/belframework/20150611/namespace/chebi.belns"
+DEFINE NAMESPACE DOID AS URL "http://resource.belframework.org/belframework/20150611/namespace/disease-ontology-ids.belns"
+DEFINE NAMESPACE DO AS URL "http://resource.belframework.org/belframework/20150611/namespace/disease-ontology.belns"
+DEFINE NAMESPACE EGID AS URL "http://resource.belframework.org/belframework/20150611/namespace/entrez-gene-ids.belns"
+DEFINE NAMESPACE GOBPID AS URL "http://resource.belframework.org/belframework/20150611/namespace/go-biological-process-ids.belns"
+DEFINE NAMESPACE GOBP AS URL "http://resource.belframework.org/belframework/20150611/namespace/go-biological-process.belns"
+DEFINE NAMESPACE GOCCID AS URL "http://resource.belframework.org/belframework/20150611/namespace/go-cellular-component-ids.belns"
+DEFINE NAMESPACE GOCC AS URL "http://resource.belframework.org/belframework/20150611/namespace/go-cellular-component.belns"
+DEFINE NAMESPACE HGNC AS URL "http://resource.belframework.org/belframework/20150611/namespace/hgnc-human-genes.belns"
+DEFINE NAMESPACE MESHPP AS URL "http://resource.belframework.org/belframework/20150611/namespace/mesh-processes.belns"
+DEFINE NAMESPACE MESHCS AS URL "http://resource.belframework.org/belframework/20150611/namespace/mesh-cellular-structures.belns"
+DEFINE NAMESPACE MESHC AS URL "http://resource.belframework.org/belframework/20150611/namespace/mesh-chemicals.belns"
+DEFINE NAMESPACE MESHCID AS URL "http://resource.belframework.org/belframework/20150611/namespace/mesh-chemicals-ids.belns"
+DEFINE NAMESPACE MESHD AS URL "http://resource.belframework.org/belframework/20150611/namespace/mesh-diseases.belns"
+DEFINE NAMESPACE MESHPPID AS URL "http://resource.belframework.org/belframework/20150611/namespace/mesh-processes-ids.belns"
+DEFINE NAMESPACE MESHCSID AS URL "http://resource.belframework.org/belframework/20150611/namespace/mesh-cellular-structures-ids.belns"
+DEFINE NAMESPACE MESHDID AS URL "http://resource.belframework.org/belframework/20150611/namespace/mesh-diseases-ids.belns"
+DEFINE NAMESPACE MGI AS URL "http://resource.belframework.org/belframework/20150611/namespace/mgi-mouse-genes.belns"
+DEFINE NAMESPACE RGD AS URL "http://resource.belframework.org/belframework/20150611/namespace/rgd-rat-genes.belns"
+DEFINE NAMESPACE SCHEM AS URL "http://resource.belframework.org/belframework/20150611/namespace/selventa-legacy-chemicals.belns"
+DEFINE NAMESPACE SDIS AS URL "http://resource.belframework.org/belframework/20150611/namespace/selventa-legacy-diseases.belns"
+DEFINE NAMESPACE SFAM AS URL "http://resource.belframework.org/belframework/20150611/namespace/selventa-protein-families.belns"
+DEFINE NAMESPACE SCOMP AS URL "http://resource.belframework.org/belframework/20150611/namespace/selventa-named-complexes.belns"
+DEFINE NAMESPACE SPID AS URL "http://resource.belframework.org/belframework/20150611/namespace/swissprot-ids.belns"
+DEFINE NAMESPACE SP AS URL "http://resource.belframework.org/belframework/20150611/namespace/swissprot.belns"
+
+DEFINE ANNOTATION Anatomy AS URL "http://resource.belframework.org/belframework/20150611/annotation/anatomy.belanno"
+DEFINE ANNOTATION Cell AS URL "http://resource.belframework.org/belframework/20150611/annotation/cell.belanno"
+DEFINE ANNOTATION CellLine AS URL "http://resource.belframework.org/belframework/20150611/annotation/cell-line.belanno"
+DEFINE ANNOTATION CellStructure AS URL "http://resource.belframework.org/belframework/20150611/annotation/cell-structure.belanno"
+DEFINE ANNOTATION Disease AS URL "http://resource.belframework.org/belframework/20150611/annotation/disease.belanno"
+DEFINE ANNOTATION MeSHAnatomy AS URL "http://resource.belframework.org/belframework/20150611/annotation/mesh-anatomy.belanno"
+DEFINE ANNOTATION MeSHDisease AS URL "http://resource.belframework.org/belframework/20150611/annotation/mesh-diseases.belanno"
+DEFINE ANNOTATION Species AS URL "http://resource.belframework.org/belframework/20150611/annotation/species-taxonomy-id.belanno"
+
+DEFINE ANNOTATION ReactomeCompartment AS PATTERN ".*"
+DEFINE ANNOTATION ReactomeReactionType AS PATTERN ".*"
+
+##################################################
+# Statements Section
+
+# COMMENT - ideally the catalyst would be represented as the activity of the protein, not the homodimer/homotetramer complex.
+# COMMENT - we may want to systematically exclude "trivial" reactants and products like water (CHEBI:15377)
+# COMMENT - we have some DefinedSet entities from Reactome - should they be treated as complexes or something else?  e.g. dbId: 189246 or http://www.reactome.org/PathwayBrowser/#/R-HSA-189208.1 "fructose, galactose, glucose"  - currently treating them as complexes
+# COMMENT - what to do about the Uniprot Accession IDs that are not in Swissprot?
+
+
+{% for evidence in evidences %}
+
+SET STATEMENT_GROUP = "Group-{{loop.index}}"
+# rxnId = {{evidence.rxnId}}
+
+SET Species = {{evidence.species_tax_id}}
+SET Citation = {{evidence.citation}}
+SET ReactomeCompartment = "{{evidence.compartment}}"
+SET ReactomeReactionType = "{{evidence.rxnType}}"
+SET Evidence = "{{evidence.summary_text}}"
+
+{% for statement in evidence.statements %}
+{{statement}}
+{% endfor %}
+
+UNSET STATEMENT_GROUP
+{% endfor %}
